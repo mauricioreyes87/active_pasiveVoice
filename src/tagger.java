@@ -9,7 +9,7 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
  
 /**
- * www.tutorialkart.com
+ *
  * POS Tagger Example in Apache OpenNLP using Java
  */
 public class tagger {
@@ -20,7 +20,7 @@ public class tagger {
         InputStream posModelIn = null;
         
         try {
-            String sentence = "fuck you by this class";
+            String sentence = "hi world says by Camilo";
             // tokenize the sentence
             tokenModelIn = new FileInputStream("C:\\Users\\Mauricio\\Desktop\\active_pasiveVoice\\src\\OPENNLP\\en-token.bin");
             TokenizerModel tokenModel = new TokenizerModel(tokenModelIn);
@@ -39,7 +39,7 @@ public class tagger {
             // Getting the probabilities of the tags given to the tokens
             double probs[] = posTagger.probs();
             
-            System.out.println("Token\t:\tTag\t:\tProbability\n---------------------------------------------");
+            System.out.println("Token\t:\tTag\t:\tProbabilidad\n---------------------------------------------");
             for(int i=0;i<tokens.length;i++){
                 System.out.println(tokens[i]+"\t:\t"+tags[i]+"\t:\t"+probs[i]);
             }
@@ -65,5 +65,9 @@ public class tagger {
                 }
             }
         }
+    }
+
+    void mensaje(String fras) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
