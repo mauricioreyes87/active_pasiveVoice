@@ -20,7 +20,7 @@ public class tagger {
         InputStream posModelIn = null;
         
         try {
-            String sentence = "hi world says by Camilo";
+            String sentence = "javier says hi to the class";
             // tokenize the sentence
             tokenModelIn = new FileInputStream("C:\\Users\\Mauricio\\Desktop\\active_pasiveVoice\\src\\OPENNLP\\en-token.bin");
             TokenizerModel tokenModel = new TokenizerModel(tokenModelIn);
