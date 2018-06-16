@@ -82,14 +82,14 @@ public class Utilidades {
         try {
             InputStream tokenModelIn=null;
             if(tokenizer==null){
-            tokenModelIn = new FileInputStream("src/OPENNLP/en-token.bin");
+            tokenModelIn = new FileInputStream("C:\\Users\\EST_1F_GC1_09\\Documents\\Active_PasiveVoice\\active_pasiveVoice\\src\\OPENNLP\\en-token.bin");
             TokenizerModel tokenModel = new TokenizerModel(tokenModelIn);
             tokenizer = new TokenizerME(tokenModel);
             
             }
             String[] tokens = tokenizer.tokenize(sentence);    
             
-            InputStream posModelIn = new FileInputStream("src/OPENNLP/en-pos-maxent.bin"); 
+            InputStream posModelIn = new FileInputStream("C:\\Users\\EST_1F_GC1_09\\Documents\\Active_PasiveVoice\\active_pasiveVoice\\src\\OPENNLP\\en-pos-maxent.bin"); 
             POSModel posModel = new POSModel(posModelIn);
             POSTaggerME posTagger = new POSTaggerME(posModel);
             
