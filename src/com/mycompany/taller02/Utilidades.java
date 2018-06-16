@@ -41,10 +41,12 @@ public class Utilidades {
 
                 String frase = vector[2];
                 String flag = vector[3];
-                System.out.println(frase);
-
+                
+                frase = frase.replace("\"", "");
+                //System.out.println(sacar_etiquetas(line));
+                sacar_etiquetas(frase);
                 vector = new String[2];
-                vector[0] = frase.replace("\"", "");
+                vector[0] = frase;
                 vector[1] = flag;
                 listado.add(vector);
             }
@@ -82,12 +84,54 @@ public class Utilidades {
     }
 
     public static TokenizerME tokenizer;
+    
+    
+    public static void sacar_etiquetas(String sentence){
+                sujeto = false;
+        verbo = false;
+        auxiliar = false;
+        by_word = false;
+        
+        sentence=sentence.toLowerCase();
 
-    public static int ActivoPasivo(final String sentence) {
+        try {
+            InputStream tokenModelIn = null;
+            if (tokenizer == null) {
+                tokenModelIn = new FileInputStream("src/OPENNLP/en-token.bin");
+                TokenizerModel tokenModel = new TokenizerModel(tokenModelIn);
+                tokenizer = new TokenizerME(tokenModel);
+
+            }
+            String[] tokens = tokenizer.tokenize(sentence);
+
+            InputStream posModelIn = new FileInputStream("src/OPENNLP/en-pos-maxent.bin");
+            POSModel posModel = new POSModel(posModelIn);
+            POSTaggerME posTagger = new POSTaggerME(posModel);
+
+            String tags[] = posTagger.tag(tokens);
+            
+            System.out.print("\n\n"+sentence+"\n");
+            
+            for (int i = 0; i < tokens.length; i++) {
+                System.err.print(tags[i]+", ");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+    }
+    
+    
+    
+
+    public static int ActivoPasivo(String sentence) {
         sujeto = false;
         verbo = false;
         auxiliar = false;
         by_word = false;
+        
+        sentence=sentence.toLowerCase();
 
         try {
             InputStream tokenModelIn = null;
@@ -105,28 +149,31 @@ public class Utilidades {
 
             String tags[] = posTagger.tag(tokens);
 
+            
+            // SI HAY SUJETO
             for (int i = 0; i < tokens.length; i++) {
                 if (tags[i].equals("NNP") || tags[i].equals("NNPS") || tags[i].equals("NN") || tags[i].equals("PRP") || tags[i].equals("PRP$")) {
                     sujeto = true;
                 }
             }
-
+                
+            // SI HAY VERBO
             for (int i = 0; i < tokens.length; i++) {
                 if (tags[i].equals("VBN") || tags[i].equals("VBG") || tags[i].equals("VBD")) {
                     verbo = true;
                 }
             }
-
-            for (int i = 0; i < tokens.length; i++) {
-                if (tokens[i].equals("was") || tokens[i].equals("were") || tokens[i].equals("are") || tokens[i].equals("is") || tokens[i].equals("be")) {
-                    auxiliar = true;
-                }
+            
+            
+            if(sentence.contains("was") || sentence.contains("were")  || sentence.contains("are") || sentence.contains("is") || sentence.contains("be")
+                    || sentence.contains("being") || sentence.contains("been")
+                    
+                    ){   
+                auxiliar = true;
             }
 
-            for (int i = 0; i < tokens.length; i++) {
-                if (tokens[i].equals("by")) {
-                    by_word = true;
-                }
+            if(sentence.contains("by")){
+                by_word=true;
             }
 
             if (tokenModelIn != null) {
@@ -137,7 +184,7 @@ public class Utilidades {
                 posModelIn.close();
             }
             
-            if(by_word){
+            if(by_word ){
                 
             }
 
