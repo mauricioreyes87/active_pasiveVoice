@@ -30,7 +30,7 @@ public class Utilidades {
         try {
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
-
+                boolean haycoma=line.startsWith("\"");
                 String[] vector = line.split(",");
                 if (vector.length < 3) {
                     continue;
@@ -41,19 +41,27 @@ public class Utilidades {
 
                 String frase = vector[2];
                 String flag = vector[3];
+                                
+             
+                if(haycoma){
+                    frase+=","+vector[3];
+                    contar_activas_fila(vector[4]);
+                }else{
+                        contar_activas_fila(vector[3]);    
+                }
                 
-                frase = frase.replace("\"", "");
-                //System.out.println(sacar_etiquetas(line));
+                frase=frase.replace("\"", "").replace("`", "");
+                //System.out.println("--"+frase+"\n");
+                
                 sacar_etiquetas(frase);
                 vector = new String[2];
                 vector[0] = frase;
                 vector[1] = flag;
                 listado.add(vector);
             }
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            
         } finally {
             if (br != null) {
                 try {
@@ -65,6 +73,20 @@ public class Utilidades {
         }
         return listado;
     }
+    
+    
+        public static void contar_activas_fila(String celda){
+        try{
+            if(Integer.parseInt(celda)==1){
+                csvactivas+=1;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+    
+    public static int csvactivas=0;
 
     public static String retornar_frases(ArrayList<String[]> dats) {
         String frases = "";
@@ -82,38 +104,43 @@ public class Utilidades {
         }
         return vfrases;
     }
-
-    public static TokenizerME tokenizer;
     
     
-    public static void sacar_etiquetas(String sentence){
-                sujeto = false;
-        verbo = false;
-        auxiliar = false;
-        by_word = false;
-        
-        sentence=sentence.toLowerCase();
-
-        try {
-            InputStream tokenModelIn = null;
-            if (tokenizer == null) {
+        public static void inicializar_variables(){
+        if(tokenizer==null){
+            try {
+                InputStream tokenModelIn=null;
                 tokenModelIn = new FileInputStream("src/OPENNLP/en-token.bin");
                 TokenizerModel tokenModel = new TokenizerModel(tokenModelIn);
                 tokenizer = new TokenizerME(tokenModel);
+                
+                InputStream posModelIn = new FileInputStream("src/OPENNLP/en-pos-maxent.bin"); 
+                posModel = new POSModel(posModelIn);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
+    public static TokenizerME tokenizer;
+        public static POSModel posModel;
+    
+    public static void sacar_etiquetas(String sentence){
+      
+        sentence=sentence.toLowerCase();
+
+        try {
+            if (tokenizer == null) {
+                inicializar_variables();
             }
             String[] tokens = tokenizer.tokenize(sentence);
 
-            InputStream posModelIn = new FileInputStream("src/OPENNLP/en-pos-maxent.bin");
-            POSModel posModel = new POSModel(posModelIn);
             POSTaggerME posTagger = new POSTaggerME(posModel);
-
             String tags[] = posTagger.tag(tokens);
             
             System.out.print("\n\n"+sentence+"\n");
-            
             for (int i = 0; i < tokens.length; i++) {
-                System.err.print(tags[i]+", ");
+                System.out.print(tags[i]+", ");
             }
 
         } catch (Exception e) {
@@ -121,6 +148,9 @@ public class Utilidades {
         }
     
     }
+    
+
+
     
     
     
@@ -134,17 +164,14 @@ public class Utilidades {
         sentence=sentence.toLowerCase();
 
         try {
-            InputStream tokenModelIn = null;
+            
             if (tokenizer == null) {
-                tokenModelIn = new FileInputStream("src\\OPENNLP\\en-token.bin");
-                TokenizerModel tokenModel = new TokenizerModel(tokenModelIn);
-                tokenizer = new TokenizerME(tokenModel);
+               inicializar_variables();
 
             }
             String[] tokens = tokenizer.tokenize(sentence);
 
-            InputStream posModelIn = new FileInputStream("src\\OPENNLP\\en-pos-maxent.bin");
-            POSModel posModel = new POSModel(posModelIn);
+
             POSTaggerME posTagger = new POSTaggerME(posModel);
 
             String tags[] = posTagger.tag(tokens);
@@ -176,13 +203,7 @@ public class Utilidades {
                 by_word=true;
             }
 
-            if (tokenModelIn != null) {
-                tokenModelIn.close();
-            }
 
-            if (posModelIn != null) {
-                posModelIn.close();
-            }
             
             if(by_word ){
                 

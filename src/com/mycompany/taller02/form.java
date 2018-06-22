@@ -148,7 +148,7 @@ public class form extends javax.swing.JFrame {
                         campotexto.setText(Utilidades.retornar_frases(datos));
 			System.out.println(selectedcsv.getAbsolutePath());
                         vfrases=Utilidades.retornar_vector_frases(datos);
-                        conteofrases.setText("Cantidad de frases obtenidas: "+vfrases.length);
+                        conteofrases.setText("Cantidad de frases obtenidas: "+vfrases.length+"\n\n"+"---   Cantidad de frases activas segun archivo CSV: "+Utilidades.csvactivas);
 		}
     }//GEN-LAST:event_btn_importarCSVActionPerformed
 
